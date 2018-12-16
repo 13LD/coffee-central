@@ -11,10 +11,18 @@ module Coffee
         @width = dx
         @height = dy
         @town_square = Array.new(@height){ Array.new(@width) }
+        square = @town_square.dup
 
         x.each_index do |index|
-          @town_square[y[index] - 1][x[index] - 1] = COFFEE_SHOP
+          square[y[index] - 1][x[index] - 1] = COFFEE_SHOP
         end
+        @town_square =
+          square.map do |item|
+            item.map do |el|
+              el.nil? ? 0 : el
+            end
+          end
+        # puts "#{@town_square}"
       end
 
       def get_output_result(max_distance)
@@ -30,14 +38,14 @@ module Coffee
 
       def get_result(max_distance)
         result = []
-        for k in 0..max_distance.length
+        max_distance.each_index do |k|
           max_coffee_shop_count = 0
           x = 0
           y = 0
 
-          for i in 0..@height
-            for j in 0..@width
-              next if @town_square&[i]&[j] == COFFEE_SHOP
+          @town_square.each_index do |i|
+            @town_square[i].each_index do |j|
+              next if @town_square[i][j] == COFFEE_SHOP
 
               coffee_shop_count = count_coffee_shops(j, i, max_distance[k])
 
@@ -63,9 +71,9 @@ module Coffee
 
       def count_coffee_shops(x, y, max_distance)
         result = 0
-        (0..@height).each do |i|
-          (0..@width).each do |j|
-            result += 1 if @town_square&[i]&[j] == COFFEE_SHOP && calculate_distance(x1: x, y1: y, x2: j, y2: i) <= max_distance
+        @town_square.each_with_index do |_item, i|
+          @town_square[i].each_with_index do |_item, j|
+            result += 1 if @town_square[i][j].to_i == COFFEE_SHOP && calculate_distance(x1: x, y1: y, x2: j, y2: i) <= max_distance
           end
         end
         result

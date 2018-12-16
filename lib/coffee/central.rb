@@ -44,14 +44,12 @@ module Coffee
 
         next unless @status
 
-
         town = Town.new(dx: dx, dy: dy, x: x, y: y)
         result.append(town.get_result(m))
 
         if show_result
           number_of_cases += 1
-          puts "Case #{number_of_cases} :"
-          puts town.get_output_result(m)
+          puts "Case #{number_of_cases} : #{town.get_output_result(m)}"
         else
           number_of_cases += 1
         end
