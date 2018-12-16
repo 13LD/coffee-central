@@ -77,7 +77,7 @@ module Coffee
     end
 
     def self.is_valid_input_data?(dx, dy, n, q)
-      status = 1 <= dx && dx <= 1000 && 1 <= dy && dy <= 1000 && 0 <= n && n <= 500000 && 1 <= q && q <= 20
+      status = 1 <= dx && dx <= 1000 && 1 <= dy && dy <= 1000 && 0 <= n && n <= 5105 && 1 <= q && q <= 20
       raise "Invalid input data" unless status
 
       status
