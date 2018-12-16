@@ -7,12 +7,13 @@ module Coffee
 
     def self.get_result(town_inputs, show_result: true)
       result = []
+      result_output = []
       number_of_cases = 1
 
       town_inputs.each do |town_case|
         @status = true
         town_case_lines = town_case.split("\n")
-        params = town_case_lines[0].split(" ");
+        params = town_case_lines[0].split(" ")
         dx, dy, n, q = params.map(&:to_i)
         next unless Coffee::Central.is_valid_input_data?(dx, dy, n, q)
 
@@ -21,6 +22,7 @@ module Coffee
         m = Array.new(q)
 
         (1..n).each do |i|
+          raise(StandardError, 'Invalid input data') if town_case_lines[i].nil?
           params = town_case_lines[i].split(" ")
           x[i - 1], y[i - 1] = params.map(&:to_i)
 
@@ -30,7 +32,7 @@ module Coffee
           end
         end
 
-        next unless @status
+        raise(StandardError, 'Invalid input data') unless @status
 
         (0..q).each do |i|
           params = town_case_lines[i + n + 1].split(" ")
@@ -42,47 +44,46 @@ module Coffee
           end
         end
 
-        next unless @status
+        raise(StandardError, 'Invalid input data') unless @status
 
         town = Town.new(dx: dx, dy: dy, x: x, y: y)
         result.append(town.get_result(m))
 
         if show_result
-          number_of_cases += 1
-          puts "Case #{number_of_cases} : #{town.get_output_result(m)}"
+          puts "Case #{number_of_cases}:"
+          puts "#{town.get_output_result(m)}"
         else
           number_of_cases += 1
         end
+        result_output.append(town.get_output_result(m))
       end
 
-      result
+      result_output
     end
 
     def self.get_town_file_input(file_name)
-      end_case = '0 0 0 0'
+      current_case = ''
       town_inputs = []
 
-      File.open(file_name, 'r') do |f|
-        current_case = ''
+      File.open(File.dirname(__FILE__) + file_name, 'r') do |f|
         f.each_line do |line|
-          if line.eql? end_case
             current_case += line
-            town_inputs.append(current_case)
-            current_case = ''
-          else
-            current_case += line
-          end
         end
+
       end
 
+      town_inputs.append(current_case)
       town_inputs
     end
 
     def self.is_valid_input_data?(dx, dy, n, q)
-      1 <= dx && dx <= 1000 && 1 <= dy && dy <= 1000 && 0 <= n && n <= 500000 && 1 <= q && q <= 20
+      status = 1 <= dx && dx <= 1000 && 1 <= dy && dy <= 1000 && 0 <= n && n <= 500000 && 1 <= q && q <= 20
+      raise "Invalid input data" unless status
+
+      status
     end
 
   end
 end
 
-Coffee::Central.get_result(Coffee::Central.get_town_file_input('input.txt'))
+# Coffee::Central.get_result(Coffee::Central.get_town_file_input('input1.txt'))
