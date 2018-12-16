@@ -9,8 +9,8 @@ module Coffee
         @max_coffee_shops_amount = max_coffee_shops_amount
       end
 
-      def print
-        "#{@max_coffee_shops_amount} (#{@x}, #{@y})"
+      def print_method
+        "#{@max_coffee_shops_amount} (#{@x}, #{@y}) \n"
       end
 
       def equal?(another)

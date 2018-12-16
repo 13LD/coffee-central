@@ -12,15 +12,17 @@ module Coffee
         @height = dy
         @town_square = Array.new(@height){ Array.new(@width) }
 
-        create_town_square(x, y)
+        x.each_index do |index|
+          @town_square[y[index] - 1][x[index] - 1] = COFFEE_SHOP
+        end
       end
 
       def get_output_result(max_distance)
-        results = this.get_result(max_distance)
+        results = get_result(max_distance)
         output = ''
 
         results.each do |result|
-          output += result.print + '\n'
+          output += result.print_method
         end
 
         output
@@ -33,9 +35,9 @@ module Coffee
           x = 0
           y = 0
 
-          for i in 0..height
-            for j in 0..width
-              next if town_square[i][j] == COFFEE_SHOP
+          for i in 0..@height
+            for j in 0..@width
+              next if @town_square&[i]&[j] == COFFEE_SHOP
 
               coffee_shop_count = count_coffee_shops(j, i, max_distance[k])
 
@@ -61,26 +63,16 @@ module Coffee
 
       def count_coffee_shops(x, y, max_distance)
         result = 0
-        for i in 0..height
-          for j in 0..width
-            next unless town_square[i][j] == COFFEE_SHOP && calculate_distance(x1: x, y1: y, x2: j, y2: i) <= max_distance
-
-            result += 1
+        (0..@height).each do |i|
+          (0..@width).each do |j|
+            result += 1 if @town_square&[i]&[j] == COFFEE_SHOP && calculate_distance(x1: x, y1: y, x2: j, y2: i) <= max_distance
           end
         end
         result
       end
 
       def calculate_distance (x1:, y1:, x2:, y2:)
-        Math.abs(x1 - x2) + Math.abs(y1 - y2)
-      end
-
-      private
-
-      def create_town_square(x, y)
-        x.length.times do |index|
-          @town_square[y[index] - 1][x[index] - 1] = COFFEE_SHOP
-        end
+        (x1 - x2).abs + (y1 - y2).abs
       end
     end
   end
